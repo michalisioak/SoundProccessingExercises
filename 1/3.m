@@ -121,7 +121,7 @@ bpm_by_complex = getBPMBy(RDC,frame,ovrlp,Fs)
 % bpm_by_phase = 1875          (93.12% error)
 % bpm_by_complex = 63.559      (102.961028% error)
 % 
-% expected these results because the base is not boosted enough
+% expected these results because there is too much noise
 
 % seven_nation_army.wav
 % original: 124 

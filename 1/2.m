@@ -7,9 +7,9 @@ end
 
 
 [x, Fs] = audioread('piano.wav');
-frames = 512;
+frame = 512;
 ovrlp = 0.25;
-X = frame_wind(x, frames, ovrlp);
+X = frame_wind(x, frame, ovrlp);
 %% a -----------------------------------------------------------------------------------------------
 % calculating fast fourier transform with fft()
 fft_var = fft(X);

@@ -7,9 +7,9 @@ end
 
 
 [x, Fs] = audioread('insomnia.wav');
-frames = 512;
+frame = 512;
 ovrlp = 0.25;
-X = frame_wind(x, frames, ovrlp);
+X = frame_wind(x, frame, ovrlp);
 
 fft_var = fft(X);
 XFmag = abs(fft_var);
@@ -77,9 +77,9 @@ end
 
 
 %% c -----------------------------------------------------------------------------------------------
-function bpm = getBPMBy(arr,frames,ovrlp,Fs)
-% frames_to_samples_const = (size(x)(1) ) / frames 
-distance_in_samples = findSecondPeakDistance(arr) * frames * ovrlp;
+function bpm = getBPMBy(arr,frame,ovrlp,Fs)
+% frame_to_samples_const = (size(x)(1) ) / frame 
+distance_in_samples = findSecondPeakDistance(arr) * frame * ovrlp;
 secs = distance_in_samples / Fs;
 bpm = 60/secs;
 end
@@ -88,20 +88,20 @@ RDE = xcorr(DE);
 subplot(1,3,1);
 plot(RDE);
 title('R_D_E(αυτοσυσχέτιση)');
-bpm_by_energy = getBPMBy(RDE,frames,ovrlp,Fs)
+bpm_by_energy = getBPMBy(RDE,frame,ovrlp,Fs)
 
 %% d -----------------------------------------------------------------------------------------------
 RDPhase = xcorr(DPhase);
 subplot(1,3,2);
 plot(RDPhase);
 title('R_D_P_h_a_s_e(αυτοσυσχέτιση)');
-bpm_by_phase = getBPMBy(RDPhase,frames,ovrlp,Fs)
+bpm_by_phase = getBPMBy(RDPhase,frame,ovrlp,Fs)
 
 RDC= xcorr(DC);
 subplot(1,3,3);
 plot(RDC);
 title('R_D_C(αυτοσυσχέτιση)');
-bpm_by_complex = getBPMBy(RDC,frames,ovrlp,Fs)
+bpm_by_complex = getBPMBy(RDC,frame,ovrlp,Fs)
 
 % piano.wav
 % original: 80 bpm

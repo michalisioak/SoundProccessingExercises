@@ -6,7 +6,7 @@ thetaWrapped = mod(theta + pi, 2*pi) - pi;
 end
 
 
-[x, Fs] = audioread('insomnia.wav');
+[x, Fs] = audioread('piano.wav');
 frame = 512;
 ovrlp = 0.25;
 X = frame_wind(x, frame, ovrlp);
@@ -110,6 +110,7 @@ bpm_by_complex = getBPMBy(RDC,frame,ovrlp,Fs)
 % detected with DC: 81.522     (1.9025% error)
 % 
 % We can not use DPhase because it is hard to find the second peak (see figure 1)
+% the graph is smooth and it changes only the slope
 
 %% e -----------------------------------------------------------------------------------------------
 

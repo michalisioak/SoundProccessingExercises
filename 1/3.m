@@ -24,8 +24,6 @@ DPhase = sum(abs(dPhase).^2, 1);
 dC = (XFmag(:,2:end) - XFmag(:,1:end-1))(:,1:end-1) .* exp(j*dPhase); %(:,1:end-1) to make op1 compatible (op1 is 512x985, op2 is 512x984) //remove a column
 DC = sum(abs(dC).^2, 1);
 
-% comments for the above code are located at "2.m"
-
 %% b -----------------------------------------------------------------------------------------------
 function distance = findSecondPeakDistance(arr)
 [pk,pk_index] = max(arr);

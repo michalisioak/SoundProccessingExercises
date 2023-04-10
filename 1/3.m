@@ -6,7 +6,7 @@ thetaWrapped = mod(theta + pi, 2*pi) - pi;
 end
 
 
-[x, Fs] = audioread('piano.wav');
+[x, Fs] = audioread('seven_nation_army.wav');
 frame = 512;
 ovrlp = 0.25;
 X = frame_wind(x, frame, ovrlp);
@@ -50,7 +50,6 @@ end
 
 %% c -----------------------------------------------------------------------------------------------
 function bpm = getBPMBy(arr,frame,ovrlp,Fs)
-% frame_to_samples_const = (size(x)(1) ) / frame 
 distance_in_samples = findSecondPeakDistance(arr) * frame * ovrlp;
 secs = distance_in_samples / Fs;
 bpm = 60/secs;
@@ -93,8 +92,6 @@ bpm_by_complex = getBPMBy(RDC,frame,ovrlp,Fs)
 % bpm_by_energy = 127.12       (1.45736434% error)
 % bpm_by_phase = 1875          (93.12% error)
 % bpm_by_complex = 258.62      (100.48062% error)
-% 
-% expected these results because there is too much noise
 
 % seven_nation_army.wav
 % original: 124 

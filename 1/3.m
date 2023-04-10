@@ -15,63 +15,37 @@ fft_var = fft(X);
 XFmag = abs(fft_var);
 XFphase = angle(fft_var);
 
-for f = 1:size(XFmag)(1)
-    for k = 2:size(XFmag)(2)
-        dE(f,k) = XFmag(f,k) - XFmag(f,k-1);
-    end
-end
-DE = zeros(1,size(dE)(2));
-for f = 1:size(dE)(1)
-    for k = 1:size(dE)(2)
-        DE(k) += dE(f,k);
-    end
-end
+dE = diff(XFmag, 1, 2); % Compute the differences between adjacent columns of XFmag
+DE = sum(dE, 1); % Sum the differences over the first dimension of dE
 
-for f = 1:size(XFphase)(1)
-    for k = 3:size(XFphase)(2)
-        dPhase(f,k) = wrapToPi(XFphase(f,k)-wrapToPi(2*XFphase(f,k-1)-XFphase(f,k-2)));
-    end
-end
-DPhase = zeros(1,size(dPhase)(2));
-for f = 1:size(dPhase)(1)
-    for k = 1:size(dPhase)(2)
-        DPhase(k) +=  abs(dPhase(f,k))**2;
-    end
-end
+dPhase = wrapToPi(XFphase(:,3:end) - wrapToPi(2*XFphase(:,2:end-1) - XFphase(:,1:end-2)));
+DPhase = sum(abs(dPhase).^2, 1);
 
-for f = 1:size(XFphase)(1)
-    for k = 3:size(XFphase)(2)
-        dPhase(f,k) = wrapToPi(2*XFphase(f,k-1)-XFphase(f,k-2));
-    end
-end
-for f = 1:size(XFmag)(1)
-    for k = 2:size(XFmag)(2)
-        dC(f,k) = XFmag(f,k)-XFmag(f,k-1)*exp(j*dPhase(f,k));
-    end
-end
-DC = zeros(1,size(dC)(2));
-for f = 1:size(dC)(1)
-    for k = 1:size(dC)(2)
-        DC(k) +=  abs(dC(f,k))**2;
-    end
-end
+dC = (XFmag(:,2:end) - XFmag(:,1:end-1))(:,1:end-1) .* exp(j*dPhase); %(:,1:end-1) to make op1 compatible (op1 is 512x985, op2 is 512x984) //remove a column
+DC = sum(abs(dC).^2, 1);
 
 % comments for the above code are located at "2.m"
 
 %% b -----------------------------------------------------------------------------------------------
 function distance = findSecondPeakDistance(arr)
-% find maximas
+[pk,pk_index] = max(arr);
+% remove everything left to the peak
+arr(1:pk_index-1) = 0;
+% put a threshold 70% second largest peak (not the first because it is too large)
 [pks,locs] =findpeaks(arr,"DoubleSided");
-% sort maximas
 sortedPks = sort(pks,'descend');
-% find the index of the second peak (we get the second peak by getting the second element in sortedPks)
-index1 = find(pks==sortedPks(1));
-index2 = find(pks==sortedPks(2));
+threshold = 0.7 * sortedPks(2);
+% remove every peak below the threshold
+filtered_peaks = pks;
+filtered_peaks(filtered_peaks<threshold) = [];
+% find the index of the second and first peak 
+% (we get the peaks by getting the second and first element in filtered_peaks)
+index1 = find(pks==filtered_peaks(1));
+index2 = find(pks==filtered_peaks(2));
 % find the true locations
-location1 = locs(index1(1));
-% index2 has two locations one behind the center and one after (because of symmetry)
-location2 = locs(index2(2));
-% we use the one after to skip abs()
+location1 = locs(index1);
+location2 = locs(index2);
+% we removed everything left to [location1],so we dont need abs() 
 distance = location2 - location1;
 end
 
@@ -116,11 +90,11 @@ bpm_by_complex = getBPMBy(RDC,frame,ovrlp,Fs)
 
 % insomnia.wav
 % original: 129
-% detected: 63
+% detected: 127.12
 % 
-% bpm_by_energy = 31.780       (305.91567% error)
+% bpm_by_energy = 127.12       (1.45736434% error)
 % bpm_by_phase = 1875          (93.12% error)
-% bpm_by_complex = 63.559      (102.961028% error)
+% bpm_by_complex = 258.62      (100.48062% error)
 % 
 % expected these results because there is too much noise
 
@@ -130,6 +104,6 @@ bpm_by_complex = getBPMBy(RDC,frame,ovrlp,Fs)
 % 
 % bpm_by_energy = 125         (0.806451613% error)
 % bpm_by_phase = 1875         (93.3333333% error)
-% bpm_by_complex = 125        (0.806451613% error)
+% bpm_by_complex = 127.12     (2.51612903% error)
 
 pause;

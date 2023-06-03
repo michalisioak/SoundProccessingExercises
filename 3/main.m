@@ -72,34 +72,39 @@ for parameter_index = 1:size(parameters,1)
     [y_vocals_l,y_vocals_r] = rotary(x_vocals,M1,M2,depth1,depth2,f1,f2,Fs_vocals);
     audio_stereo = [y_vocals_l', y_vocals_r'];
     audiowrite(sprintf('results/rotary-vocals-%d.wav',parameter_index), audio_stereo, Fs_vocals);
+    audiowrite(sprintf('results/rotary-vocals-%d-mono.wav',parameter_index),y_vocals_l+y_vocals_r, Fs_vocals);
     subplot(2, 2, parameter_index);
-    % specgram(audio_stereo);
+    specgram(y_vocals_l+y_vocals_r);
     title(parameter_index);
     colorbar; 
-    disp(sprintf('rotary-vocals-%d saved successfully and now playing.',parameter_index));
-    % if (verbose)
-        % sound(y_vocals_l, Fs_vocals);
-    % end
+    if (verbose)
+        disp(sprintf('rotary-vocals-%d saved successfully and now playing (mono version).',parameter_index));
+        soundsc(y_vocals_l+y_vocals_r, Fs_vocals);
+    end
 end
 
 % % for guitar
-% figure('Name', 'Guitar-nonlinear');
-% for parameter_index = 1:size(parameters,1)
-%     gn = parameters(parameter_index,1);
-%     gp = parameters(parameter_index,2);
-%     y_guitar = nonlinear(x_guitar,Fs_guitar,gn,gp);
-%     audiowrite(sprintf('results/nonlinear-guitar-%d-%d.wav',gn,gp), y_guitar, Fs_guitar);
-%     subplot(2, 2, parameter_index);
-%     specgram(y_vocals);
-%     title(sprintf('gn=%d gp=%d',gn,gp));
-%     colorbar;
-%     disp(sprintf('nonlinear-guitar-%d-%d saved successfully and now playing.',gn,gp));
-%     if (verbose)
-%         soundsc(y_guitar, Fs_guitar);
-%     end
-% end
-
-
+figure('Name', 'guitar-rotary');
+for parameter_index = 1:size(parameters,1)
+    M1 = parameters(parameter_index,1);
+    M2 = parameters(parameter_index,2);
+    depth1 = parameters(parameter_index,3);
+    depth2 = parameters(parameter_index,4);
+    f1 = parameters(parameter_index,5);
+    f2 = parameters(parameter_index,6);
+    [y_guitar_l,y_guitar_r] = rotary(x_guitar,M1,M2,depth1,depth2,f1,f2,Fs_guitar);
+    audio_stereo = [y_guitar_l', y_guitar_r'];
+    audiowrite(sprintf('results/rotary-guitar-%d.wav',parameter_index), audio_stereo, Fs_guitar);
+    audiowrite(sprintf('results/rotary-guitar-%d-mono.wav',parameter_index), y_guitar_l+y_guitar_r, Fs_guitar);
+    subplot(2, 2, parameter_index);
+    specgram(y_guitar_l+y_guitar_r);
+    title(parameter_index);
+    colorbar; 
+    if (verbose)
+        disp(sprintf('rotary-guitar-%d saved successfully and now playing (stereo version).',parameter_index));
+        sound(audio_stereo, Fs_vocals);
+    end
+end
 
 
 %  +-----------------------------------------------------+

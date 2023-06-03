@@ -170,9 +170,16 @@ end
 
 % nonlinear -> rotary -> reverb
 
-
+y_after_nl = nonlinear(x_vocals,Fs_vocals,3,80,0.7);
+y_after_rotary = rotary(y_after_nl,900,0,90,10,1.1,0.5,Fs_vocals);
+y_final = reverb_schroeder(y_after_rotary,2,0.9);
+soundsc(y_final);
 
 % reverb -> nonlinear -> rotary
 
+y_after_reverb = reverb_schroeder(x_vocals,2,0.9);
+y_after_nl = nonlinear(y_after_reverb,Fs_vocals,3,5,0.2);
+y_final = rotary(y_after_nl,800,500,80,50,1.05,0.9,Fs_vocals);
+soundsc(y_final);
 
 pause;

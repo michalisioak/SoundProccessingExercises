@@ -9,5 +9,5 @@ function y = reverb_schroeder (x, type, mix)
         otherwise
             disp("Invalid type")
     end
-    y = x + y * mix;
+    y = x * (1-mix) + y * mix;
 end

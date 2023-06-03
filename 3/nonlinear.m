@@ -15,6 +15,6 @@ function y=nonlinear(x,Fs, gn, gp, mix)
     y += after_pre * gdry;
     y *= gpost;
 
-    y = x + y * mix;
+    y = x * (1-mix) + y * mix;
 end
 

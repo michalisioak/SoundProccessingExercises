@@ -1,6 +1,6 @@
 addpath('./');
 
-verbose = true;
+verbose = false;
 
 [x_guitar, Fs_guitar] = audioread('guitar1.wav');
 [x_vocals, Fs_vocals] = audioread('vocals.wav');
@@ -60,27 +60,27 @@ parameters = [
     650 400 65 40 0.9  0.5;
 ];
 
-% % for vocals
-% figure('Name', 'vocals-rotary');
-% for parameter_index = 1:size(parameters,1)
-%     M1 = parameters(parameter_index,1);
-%     M2 = parameters(parameter_index,2);
-%     depth1 = parameters(parameter_index,3);
-%     depth2 = parameters(parameter_index,4);
-%     f1 = parameters(parameter_index,5);
-%     f2 = parameters(parameter_index,6);
-%     [y_vocals_l,y_vocals_r] = rotary(x_vocals,M1,M2,depth1,depth2,f1,f2,Fs_vocals);
-%     audio_stereo = [y_vocals_l', y_vocals_r'];
-%     audiowrite(sprintf('results/rotary-vocals-%d.wav',parameter_index), audio_stereo, Fs_vocals);
-%     subplot(2, 2, parameter_index);
-%     % specgram(audio_stereo);
-%     title(parameter_index);
-%     colorbar; 
-%     disp(sprintf('rotary-vocals-%d saved successfully and now playing.',parameter_index));
-%     % if (verbose)
-%         % sound(y_vocals_l, Fs_vocals);
-%     % end
-% end
+% for vocals
+figure('Name', 'vocals-rotary');
+for parameter_index = 1:size(parameters,1)
+    M1 = parameters(parameter_index,1);
+    M2 = parameters(parameter_index,2);
+    depth1 = parameters(parameter_index,3);
+    depth2 = parameters(parameter_index,4);
+    f1 = parameters(parameter_index,5);
+    f2 = parameters(parameter_index,6);
+    [y_vocals_l,y_vocals_r] = rotary(x_vocals,M1,M2,depth1,depth2,f1,f2,Fs_vocals);
+    audio_stereo = [y_vocals_l', y_vocals_r'];
+    audiowrite(sprintf('results/rotary-vocals-%d.wav',parameter_index), audio_stereo, Fs_vocals);
+    subplot(2, 2, parameter_index);
+    % specgram(audio_stereo);
+    title(parameter_index);
+    colorbar; 
+    disp(sprintf('rotary-vocals-%d saved successfully and now playing.',parameter_index));
+    % if (verbose)
+        % sound(y_vocals_l, Fs_vocals);
+    % end
+end
 
 % % for guitar
 % figure('Name', 'Guitar-nonlinear');
@@ -157,4 +157,17 @@ if (verbose)
     disp('reverb-guitar-type2 saved successfully and now playing.');
     soundsc(y_reverb_guitar_type_2, Fs_guitar);
 end
+
+
+%  +-----------------------------------------------------+
+%% | Bonus combining all filters                         |
+%  +-----------------------------------------------------+
+
+% nonlinear -> rotary -> reverb
+
+
+
+% reverb -> nonlinear -> rotary
+
+
 pause;

@@ -1,2 +1,0 @@
-[x] mix
-[ ] fix rotary

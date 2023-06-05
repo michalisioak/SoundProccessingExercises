@@ -5,6 +5,14 @@ verbose = false;
 [x_guitar, Fs_guitar] = audioread('guitar1.wav');
 [x_vocals, Fs_vocals] = audioread('vocals.wav');
 
+figure('Name', 'vocals-original');
+specgram(x_vocals);
+colorbar; 
+
+figure('Name', 'guitar-original');
+specgram(x_guitar);
+colorbar; 
+
 %  +-----------------------------------------------------+
 %% | nonlinear                                           |
 %  +-----------------------------------------------------+
@@ -73,7 +81,7 @@ for parameter_index = 1:size(parameters,1)
     audio_stereo = [y_vocals_l', y_vocals_r'];
     audiowrite(sprintf('results/rotary-vocals-%d.wav',parameter_index), audio_stereo, Fs_vocals);
     audiowrite(sprintf('results/rotary-vocals-%d-mono.wav',parameter_index),y_vocals_l+y_vocals_r, Fs_vocals);
-    subplot(2, 2, parameter_index);
+    subplot(1, 2, parameter_index);
     specgram(y_vocals_l+y_vocals_r);
     title(parameter_index);
     colorbar; 
@@ -96,7 +104,7 @@ for parameter_index = 1:size(parameters,1)
     audio_stereo = [y_guitar_l', y_guitar_r'];
     audiowrite(sprintf('results/rotary-guitar-%d.wav',parameter_index), audio_stereo, Fs_guitar);
     audiowrite(sprintf('results/rotary-guitar-%d-mono.wav',parameter_index), y_guitar_l+y_guitar_r, Fs_guitar);
-    subplot(2, 2, parameter_index);
+    subplot(1, 2, parameter_index);
     specgram(y_guitar_l+y_guitar_r);
     title(parameter_index);
     colorbar; 
@@ -173,13 +181,17 @@ end
 y_after_nl = nonlinear(x_vocals,Fs_vocals,3,80,0.7);
 y_after_rotary = rotary(y_after_nl,900,0,90,10,1.1,0.5,Fs_vocals);
 y_final = reverb_schroeder(y_after_rotary,2,0.9);
-soundsc(y_final);
+if (verbose)
+    soundsc(y_final);
+end
 
 % reverb -> nonlinear -> rotary
 
 y_after_reverb = reverb_schroeder(x_vocals,2,0.9);
 y_after_nl = nonlinear(y_after_reverb,Fs_vocals,3,5,0.2);
 y_final = rotary(y_after_nl,800,500,80,50,1.05,0.9,Fs_vocals);
-soundsc(y_final);
+if (verbose)
+    soundsc(y_final);
+end
 
 pause;
